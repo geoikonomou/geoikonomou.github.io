@@ -1,0 +1,86 @@
+:root {
+  --bg: #f4f1ea;
+  --text: #1e1f24;
+  --muted: #5b606d;
+  --card: #ffffff;
+  --line: #d5d1c6;
+  --accent: #0b6e4f;
+}
+
+* { box-sizing: border-box;}
+
+body {
+    margin: 0;
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, #fff9ef, var(--bg) 50%);
+    color: var(--text);
+}
+
+.app-header, .app-main {
+    width: min(980px, 92vw);
+    margin: 0 auto;
+}
+
+.app-header {padding: 2rem 0 1rem; }
+
+.view.hidden { display: none;}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+input, button { font: inherit; }
+
+input {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.6rem 0.7rem;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+}
+
+.profile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1rem 0 2rem;
+}
+
+.stats { grid-column: 1 / -1; }
+
+.chart-placeholder {
+    margin-top: 0.6rem;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+}
+
+.message {
+    min-height: 1rem;
+    margin: 0;
+    color: #8f1f1f
+}
+
+@media (max-width: 760px) {
+    .grid { grid-template-columns: 1fr;}
+}
