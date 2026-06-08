@@ -1,0 +1,63 @@
+<!doctype html>
+<html land="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GraphQL Profile Dashboard</title>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body>
+        <header class="app-header">
+            <h1>GraphQL Profile Dashboard</h1>
+            <p>Step 1 Skeleton</p>
+        </header>
+
+        <main class="app-main">
+            <section id="login-view" class="view">
+                <h2>Login</h2>
+                <form id="login-form" class="card">
+                    <label for="identifier">Username or Email</label>
+                    <input id="identifier" name="identifier" type="text" required>
+
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" required>
+
+                    <button type="submit">Sign in</button>
+                    <p id="login-message" class="message" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <section id="profile-view" class="view hidden">
+                <div class="profile-top">
+                    <h2>My Profile</h2>
+                    <button id="logout-button" type="button"></button>
+                </div>
+
+                <div class="grid">
+                    <article class="card">
+                        <h3>Section 1: Identity</h3>
+                        <p>Placeholder</p>
+                    </article>
+
+                   <article class="card">
+                        <h3>Section 2: Performance</h3>
+                        <p>Placeholder</p>
+                    </article>
+         
+                    <article class="card">
+                        <h3>Section 3: Progress</h3>
+                        <p>Placeholder</p>
+                    </article>
+
+                   <article class="card">
+                        <h3>Section 4: Statistics (SVG)</h3>
+                        <div id="chart-a" class="chart-placeholder">Graph A placeholder</div>
+                        <div id="chart-b" class="chart-placeholder">Graph B placeholder</div>
+                   </article>
+                </div>
+            </section>
+        </main>
+
+        <script type="module" src="./js/main.js"></script>
+    </body>
+</html>
