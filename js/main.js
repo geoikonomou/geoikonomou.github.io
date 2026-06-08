@@ -1,7 +1,8 @@
-import { clearToken, getToken } from "./auth.js";
+import { clearToken, getToken, saveToken } from "./auth.js";
 import { renderChartPlaceholders } from "./charts/svgCharts.js"
+import { signIn, validateToken } from "./api.js";
 import { appState, setAuthStatus, setView } from "./state.js";
-import { bindLoginForm, setLoginMessage } from "./views/loginView.js";
+import { bindLoginForm, setLoginBusy, setLoginMessage } from "./views/loginView.js";
 import { bindLogout } from "./views/profileView.js"
 
 
@@ -18,16 +19,29 @@ function render() {
     }
 }
 
-function handleLoginAttempt ({ identifier, password }) {
+async function handleLoginAttempt ({ identifier, password }) {
     if (!identifier || !password) {
         setLoginMessage("Enter both identifier and password.");
         return
     }
 
     setLoginMessage("");
-    setAuthStatus("authenticated", "step1-local-token", null);
-    setView("profile");
-    render();
+    setLoginBusy(true);
+    setAuthStatus("authenticating", null, null);
+
+    try {
+        const token = await signIn(identifier, password);
+
+        saveToken(token);
+        setAuthStatus("authenticated", token, null);
+        setView("profile");
+        render();
+    } catch (error) {
+        setAuthStatus("auth-error", null, error.message);
+        setLoginMessage(error.message || "Login failed.");
+    } finally {
+        setLoginBusy(false);
+    }
 }
 
 function handleLogout() {
@@ -38,16 +52,32 @@ function handleLogout() {
     render();
 }
 
-function bootstrap() {
-    const existingToken = getToken();
-    if (existingToken) {
-        setAuthStatus("authenticated", existingToken, null);
-        setView("profile");
-    }
-
+async function bootstrap() {
     bindLoginForm(handleLoginAttempt);
     bindLogout(handleLogout);
     renderChartPlaceholders();
+   
+    const existingToken = getToken();
+    
+    if (!existingToken) {
+        setView("login");
+        render();
+        return;
+    }
+
+    setAuthStatus("authenticating", existingToken, null);
+    const stillValid = await validateToken(existingToken);
+
+    if (stillValid) {
+        setAuthStatus("authenticated", existingToken, null);
+        setView("profile");
+    } else {
+        clearToken();
+        setAuthStatus("unauthenticated", null, null);
+        setView("login");
+        setLoginMessage("Session expired. Please sign in again.");
+    }
+
     render();
 }
 

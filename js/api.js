@@ -1,4 +1,4 @@
-const DOMAIN = "https://((DOMAIN))";
+const DOMAIN = "https://platform.zone01.gr";
 const SIGNIN_URL = DOMAIN + "/api/auth/signin";
 const GRAPHQL_URL = DOMAIN + "/api/graphql-engine/v1/graphql";
 
