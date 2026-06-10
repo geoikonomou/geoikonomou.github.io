@@ -42,7 +42,7 @@ export async function signIn(identifier, password) {
     const token = parseTokenResponse(raw);
 
     if (!token) {
-        throw new Error("Signin succeded but token was empty");
+        throw new Error("Signin succeeded but token was empty");
     }
 
     return token
@@ -122,13 +122,21 @@ export async function fetchProfileData(token) {
         }
       }
 
-      result(limit: 1, order_by: { createdAt: desc }) {
+      result(limit: 1, order_by: { createdAt: asc }) {
         id
         user {
           id
           login
         }
       }
+
+      xp_transactions: transaction(
+      where: { type: { _eq: $xpType } }
+      order_by: { createdAt: asc }
+      limit: 120
+      ) {
+        amount
+        createdAt}
     }
   `;
 
