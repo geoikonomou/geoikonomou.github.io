@@ -10,19 +10,29 @@ import { formatRatio, formatBytes } from "./format.js";
 function render() {
     const loginView = document.getElementById("login-view");
     const profileView = document.getElementById("profile-view");
+    const appHeader = document.getElementById("app-header");
 
     if (appState.view === "login") {
         loginView.classList.remove("hidden");
         profileView.classList.add("hidden");
+        if (appHeader) appHeader.style.display = "none";
     } else {
         profileView.classList.remove("hidden");
         loginView.classList.add("hidden");
+        if (appHeader) appHeader.style.display = "block";
     }
 }
 
 function setProfileMessage(message) {
     const el = document.getElementById("profile-message");
     if (el) el.textContent = message;
+}
+
+function setProfileHeading(login) {
+    const headingEl = document.getElementById("profile-heading");
+    if (!headingEl) return;
+
+    headingEl.textContent = login ? `Profile: ${login}` : "Profile";
 }
 
 function renderProfileData(profileData) {
@@ -36,6 +46,8 @@ function renderProfileData(profileData) {
     const passCount = profileData.progress_pass?.aggregate?.count || 0;
     const failCount = profileData.progress_fail?.aggregate?.count || 0;
     const formattedRatio = formatRatio(user?.auditRatio, 1);
+
+    setProfileHeading(user?.login || "");
 
     if (identityEl) {
         identityEl.innerHTML = [
@@ -118,6 +130,7 @@ function handleLogout() {
     setView("login");
     setLoginMessage("");
     setProfileMessage("");
+    setProfileHeading("");
     render();
 }
 

@@ -1,58 +1,227 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=IM+Fell+English:ital@0;1&family=Special+Elite&display=swap");
+
 :root {
-  --bg: #f4f1ea;
-  --text: #1e1f24;
-  --muted: #5b606d;
-  --card: #ffffff;
-  --line: #d5d1c6;
-  --accent: #0b6e4f;
+    --bg-base: #1f1913;
+    --bg-plate: #2b2118;
+    --bg-panel: #3a2b1f;
+    --text-main: #e6d7bd;
+    --text-muted: #b89f78;
+    --line: #7b5a34;
+    --line-soft: #5c4328;
+    --accent-brass: #c89548;
+    --accent-copper: #a5622f;
+    --danger: #cf6a4e;
 }
 
-* { box-sizing: border-box;}
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
-    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top left, #fff9ef, var(--bg) 50%);
-    color: var(--text);
+    font-family: "IM Fell English", Georgia, serif;
+    color: var(--text-main);
+    background:
+        radial-gradient(circle at 20% 15%, rgba(221, 171, 91, 0.15), transparent 35%),
+        radial-gradient(circle at 82% 78%, rgba(140, 93, 44, 0.16), transparent 35%),
+        linear-gradient(160deg, #17110c 0%, #20160f 52%, #16100b 100%);
+    min-height: 100vh;
+    position: relative;
 }
 
-.app-header, .app-main {
-    width: min(980px, 92vw);
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 217, 166, 0.025) 0,
+        rgba(255, 217, 166, 0.025) 2px,
+        transparent 2px,
+        transparent 14px
+    );
+    opacity: 0.85;
+}
+
+.app-header,
+.app-main {
+    width: min(1080px, 93vw);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.app-header {
+    padding: 2.2rem 0 1.4rem;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f2dfbe;
+    text-shadow: 0 2px 0 #5d4124, 0 0 18px rgba(200, 149, 72, 0.15);
+}
+
+h2,
+h3,
+h4 {
+    margin: 0;
+    font-family: "Cinzel", serif;
+    letter-spacing: 0.04em;
+    color: #f0d8b0;
+}
+
+h2 {
+    margin-bottom: 0.9rem;
+}
+
+h3 {
+    margin-bottom: 0.65rem;
+}
+
+.view.hidden {
+    display: none;
+}
+
+.card {
+    position: relative;
+    background: linear-gradient(175deg, rgba(62, 44, 29, 0.97) 0%, rgba(50, 35, 23, 0.97) 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(218, 171, 99, 0.16), 0 14px 28px rgba(0, 0, 0, 0.26);
+}
+
+.card::before,
+.card::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #e7bf6b, #815728);
+    box-shadow: 0 0 0 1px rgba(62, 36, 15, 0.75);
+}
+
+.card::before {
+    top: 10px;
+    right: 10px;
+}
+
+.card::after {
+    bottom: 10px;
+    left: 10px;
+}
+
+input,
+button {
+    font: inherit;
+}
+
+label {
+    display: block;
+    margin: 0.45rem 0 0.25rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+#login-form {
+    display: grid;
+    gap: 0.25rem;
+    width: min(50%, 460px);
+    min-width: 300px;
     margin: 0 auto;
 }
 
-.app-header {padding: 2rem 0 1rem; }
-
-.view.hidden { display: none;}
-
-.card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 1rem;
+#login-message {
+    width: min(50%, 460px);
+    min-width: 300px;
+    margin: 0 auto 0.7rem;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    display: none;
 }
 
-input, button { font: inherit; }
+#login-message:not(:empty) {
+    display: block;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid #aa5d4a;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(95, 36, 30, 0.72), rgba(75, 27, 24, 0.72));
+    color: #ffd6c4;
+    font-weight: 700;
+    box-shadow: inset 0 0 0 1px rgba(255, 198, 170, 0.15);
+}
+
+#login-view:not(.hidden) {
+    min-height: 68vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#login-view > h2 {
+    text-align: center;
+}
 
 input {
+    width: 100%;
     border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 0.6rem 0.7rem;
+    padding: 0.62rem 0.74rem;
+    background: #2a1f16;
+    color: var(--text-main);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+input:focus {
+    outline: 1px solid var(--accent-brass);
+    border-color: var(--accent-brass);
 }
 
 button {
-    border: none;
-    border-radius: 8px;
-    padding: 0.65rem 0.9rem;
-    background: var(--accent);
-    color: #fff;
+    border: 1px solid #805224;
+    border-radius: 10px;
+    padding: 0.66rem 1rem;
+    background: linear-gradient(180deg, #cb9950 0%, #b87a34 48%, #8f5b28 100%);
+    color: #201308;
+    font-family: "Special Elite", monospace;
+    letter-spacing: 0.05em;
     cursor: pointer;
+    transition: transform 150ms ease, filter 150ms ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+button:active {
+    transform: translateY(0);
 }
 
 .profile-top {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+#profile-heading {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+#logout-button {
+    position: absolute;
+    right: 0;
 }
 
 .grid {
@@ -62,7 +231,44 @@ button {
     margin: 1rem 0 2rem;
 }
 
-.stats { grid-column: 1 / -1; }
+.grid > .card:nth-child(3):not(.stats) {
+    grid-column: 1 / -1;
+}
+
+.grid > .card {
+    animation: card-rise 450ms ease both;
+}
+
+.grid > .card:nth-child(2) {
+    animation-delay: 70ms;
+}
+
+.grid > .card:nth-child(3) {
+    animation-delay: 120ms;
+}
+
+.grid > .card:nth-child(4) {
+    animation-delay: 170ms;
+}
+
+.stats {
+    grid-column: 1 / -1;
+}
+
+.stats > h3 {
+    text-align: center;
+    margin-bottom: 0.9rem;
+}
+
+@media (min-width: 980px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid > .card:nth-child(3):not(.stats) {
+        grid-column: auto;
+    }
+}
 
 .stats-top-row {
     display: grid;
@@ -78,42 +284,115 @@ button {
 .graph-title {
     margin: 0.2rem 0 0.35rem;
     font-size: 0.95rem;
-    color: #2f3a4c;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .chart-placeholder {
     margin-top: 0.6rem;
-    border: 1px dashed var(--line);
-    border-radius: 10px;
+    border: 1px dashed var(--line-soft);
+    border-radius: 12px;
     min-height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--muted);
+    color: var(--text-muted);
+    background:
+        radial-gradient(circle at 25% 20%, rgba(219, 168, 91, 0.08), transparent 52%),
+        linear-gradient(170deg, rgba(36, 26, 18, 0.8), rgba(34, 24, 17, 0.86));
 }
 
 .message {
     min-height: 1rem;
     margin: 0;
-    color: #8f1f1f
+    color: var(--danger);
 }
 
 #chart-a,
 #chart-c,
 #chart-d {
     min-height: 240px;
-    background: #fff;
+    background-color: rgba(20, 15, 11, 0.78);
+}
+
+#chart-a {
+    min-height: 320px;
 }
 
 #chart-c {
-    min-height: 390px;
+    min-height: 440px;
 }
 
 #chart-d {
     margin-top: 0.9rem;
 }
 
+#identity-content,
+#performance-content,
+#progress-content {
+    color: #ead9bb;
+    font-size: 1.14rem;
+    line-height: 1.65;
+}
+
+#identity-content strong,
+#performance-content strong,
+#progress-content strong {
+    color: #ffdca8;
+    font-weight: 700;
+    font-size: 1.02em;
+}
+
+#identity-content p,
+#performance-content p,
+#progress-content p {
+    margin: 0 0 0.5rem;
+}
+
+@keyframes card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 760px) {
-    .grid { grid-template-columns: 1fr;}
-    .stats-top-row { grid-template-columns: 1fr; }
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grid > .card:nth-child(3):not(.stats) {
+        grid-column: auto;
+    }
+
+    .stats-top-row {
+        grid-template-columns: 1fr;
+    }
+
+    .app-header {
+        padding-top: 1.6rem;
+    }
+
+    #chart-c {
+        min-height: 360px;
+    }
+
+    #login-view:not(.hidden) {
+        min-height: auto;
+    }
+
+    #login-form {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #login-message {
+        width: 100%;
+        min-width: 0;
+    }
 }

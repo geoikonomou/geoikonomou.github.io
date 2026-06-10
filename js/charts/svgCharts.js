@@ -33,9 +33,9 @@ function renderXpLineChart(container, transactions) {
 
     clearNode(container);
 
-    const width = 720;
-    const height = 260;
-    const pad = { top: 18, right: 18, bottom: 36, left: 60 };
+    const width = 760;
+    const height = 320;
+    const pad = { top: 22, right: 24, bottom: 48, left: 72 };
     const innerW = width - pad.left - pad.right;
     const innerH = height - pad.top - pad.bottom;
 
@@ -59,19 +59,37 @@ function renderXpLineChart(container, transactions) {
         "aria-label": "Cumulative XP over time"
     });
 
-    const bg = svgEl("rect", { x: 0, y: 0, width, height, fill: "#fff" });
+    const bg = svgEl("rect", {
+        x: 0,
+        y: 0,
+        width,
+        height,
+        fill: "#3a2b1f"
+    });
     svg.appendChild(bg);
 
-    const axisColor = "#6b7280";
-    svg.appendChild(svgEl("line", { x1: pad.left, y1: pad.top, x2: pad.left, y2: height - pad.bottom, stroke: axisColor }));
-    svg.appendChild(svgEl("line", { x1: pad.left, y1: height - pad.bottom, x2: width - pad.right, y2: height - pad.bottom, stroke: axisColor }));
+    const chartFrame = svgEl("rect", {
+        x: pad.left,
+        y: pad.top,
+        width: innerW,
+        height: innerH,
+        fill: "#f1dfbd",
+        stroke: "#7b5a34",
+        "stroke-width": 1.4,
+        rx: 8
+    });
+    svg.appendChild(chartFrame);
+
+    const axisColor = "#704a2a";
+    svg.appendChild(svgEl("line", { x1: pad.left, y1: pad.top, x2: pad.left, y2: height - pad.bottom, stroke: axisColor, "stroke-width": 1.6 }));
+    svg.appendChild(svgEl("line", { x1: pad.left, y1: height - pad.bottom, x2: width - pad.right, y2: height - pad.bottom, stroke: axisColor, "stroke-width": 1.6 }));
 
     const ticks = 4;
     for (let i = 0; i <= ticks; i +=1) {
         const v = minY + (i/ticks) * (maxY -minY);
         const y = yFor(v);
-        svg.appendChild(svgEl("line", { x1: pad.left, y1: y, x2: width - pad.right, y2: y, stroke: "#e5e7eb" }));
-        const txt = svgEl("text", { x: pad.left - 10, y: y + 4, "text-anchor": "end", fill: "#374151", "font-size": "11" });
+        svg.appendChild(svgEl("line", { x1: pad.left, y1: y, x2: width - pad.right, y2: y, stroke: "#c8ab78", "stroke-width": 1 }));
+        const txt = svgEl("text", { x: pad.left - 12, y: y + 5, "text-anchor": "end", fill: "#f7e8cb", "font-size": "14", "font-weight": "700" });
         txt.textContent = formatBytes(v);
         svg.appendChild(txt);
     }
@@ -80,26 +98,35 @@ function renderXpLineChart(container, transactions) {
     .map((p,i) => `${i === 0 ? "M" : "L"} ${xFor(i)} ${yFor(p.cumulative)}`)
     .join(" ");
 
+    const areaData = `${pathData} L ${xFor(points.length - 1)} ${height - pad.bottom} L ${xFor(0)} ${height - pad.bottom} Z`;
+    svg.appendChild(
+        svgEl("path", {
+            d: areaData,
+            fill: "rgba(184, 122, 52, 0.28)",
+            stroke: "none"
+        })
+    );
+
     const path = svgEl("path", {
         d: pathData,
         fill: "none",
-        stroke: "#0b6e4f",
-        "stroke-width": 2.5
+        stroke: "#8f4f24",
+        "stroke-width": 3
     });
     svg.appendChild(path);
 
     const last = points[points.length - 1];
-    const dot = svgEl("circle", { cx: xFor(points.length -1), cy: yFor(last.cumulative), r: 4, fill: "#0b6e4f" });
+    const dot = svgEl("circle", { cx: xFor(points.length -1), cy: yFor(last.cumulative), r: 5, fill: "#8f4f24", stroke: "#f7e8cb", "stroke-width": 1.5 });
     svg.appendChild(dot);
 
     const firstDate = formatDateLabel(points[0].createdAt);
     const lastDate = formatDateLabel(last.createdAt);
 
-    const leftLabel = svgEl("text", { x: pad.left, y: height -12, fill: "#374151", "font-size": "11" });
+    const leftLabel = svgEl("text", { x: pad.left, y: height - 16, fill: "#f7e8cb", "font-size": "14", "font-weight": "700" });
     leftLabel.textContent = firstDate;
     svg.appendChild(leftLabel);
     
-    const rightLabel = svgEl("text", { x: width - pad.right, y: height - 12, "text-anchor": "end", fill: "#374151", "font-size": "11" });
+    const rightLabel = svgEl("text", { x: width - pad.right, y: height - 16, "text-anchor": "end", fill: "#f7e8cb", "font-size": "14", "font-weight": "700" });
     rightLabel.textContent = lastDate;
     svg.appendChild(rightLabel);
 
@@ -140,10 +167,10 @@ function renderXpSourcePie(container, transactions) {
 
     const buckets = buildXpSourceBuckets(transactions);
     const slices = [
-        { label: "JS Piscine", value: buckets.jsPiscine, color: "#0ea5a3" },
-        { label: "Go Piscine", value: buckets.goPiscine, color: "#1d4ed8" },
-        { label: "Module", value: buckets.module, color: "#64748b" },
-        { label: "Bonus", value: buckets.bonus, color: "#f59e0b" }
+        { label: "JS Piscine", value: buckets.jsPiscine, color: "#b5482a" },
+        { label: "Go Piscine", value: buckets.goPiscine, color: "#2f7a72" },
+        { label: "Module", value: buckets.module, color: "#5d6f86" },
+        { label: "Bonus", value: buckets.bonus, color: "#d8a63f" }
     ].filter((slice) => slice.value > 0);
 
     const total = slices.reduce((sum, s) => sum + s.value, 0);
@@ -154,11 +181,11 @@ function renderXpSourcePie(container, transactions) {
 
     clearNode(container);
 
-    const width = 520;
-    const height = 330;
+    const width = 560;
+    const height = 360;
     const cx = 150;
-    const cy = 165;
-    const r = 120;
+    const cy = 180;
+    const r = 118;
 
     const svg = svgEl("svg", {
         viewBox: `0 0 ${width} ${height}`,
@@ -167,6 +194,29 @@ function renderXpSourcePie(container, transactions) {
         role: "img",
         "aria-label": "XP source distribution pie chart"
     });
+
+    svg.appendChild(
+        svgEl("rect", {
+            x: 0,
+            y: 0,
+            width,
+            height,
+            fill: "#3a2b1f"
+        })
+    );
+
+    svg.appendChild(
+        svgEl("rect", {
+            x: 24,
+            y: 24,
+            width: 254,
+            height: 312,
+            fill: "#f1dfbd",
+            stroke: "#7b5a34",
+            "stroke-width": 1.4,
+            rx: 10
+        })
+    );
 
     let currentAngle = 0;
     slices.forEach((slice) => {
@@ -186,8 +236,8 @@ function renderXpSourcePie(container, transactions) {
             svgEl("path", {
                 d,
                 fill: slice.color,
-                stroke: "#ffffff",
-                "stroke-width": 1
+                stroke: "#f6ead2",
+                "stroke-width": 1.6
             })
         );
 
@@ -195,35 +245,36 @@ function renderXpSourcePie(container, transactions) {
     });
 
     const totalLabel = svgEl("text", {
-        x: 328,
-        y: 54,
-        fill: "#111827",
-        "font-size": "14",
-        "font-weight": "600"
+        x: 330,
+        y: 58,
+        fill: "#f7e8cb",
+        "font-size": "17",
+        "font-weight": "700"
     });
     totalLabel.textContent = "Total XP:";
     svg.appendChild(totalLabel);
 
     const totalValue = svgEl("text", {
-        x: 398,
-        y: 54,
-        fill: "#374151",
-        "font-size": "14"
+        x: 410,
+        y: 58,
+        fill: "#fff0d1",
+        "font-size": "19",
+        "font-weight": "700"
     });
     totalValue.textContent = formatBytes(total);
     svg.appendChild(totalValue);
 
     slices.forEach((slice, i) => {
-        const y = 94 + i * 48;
+        const y = 112 + i * 56;
         const percent = ((slice.value / total) * 100).toFixed(1);
 
-        svg.appendChild(svgEl("rect", { x: 306, y: y - 12, width: 14, height: 14, fill: slice.color, rx: 2 }));
+        svg.appendChild(svgEl("rect", { x: 308, y: y - 12, width: 15, height: 15, fill: slice.color, rx: 2 }));
 
-        const label = svgEl("text", { x: 328, y, fill: "#111827", "font-size": "14" });
+        const label = svgEl("text", { x: 332, y, fill: "#fff0d1", "font-size": "20", "font-weight": "700" });
         label.textContent = `${slice.label}: ${percent}%`;
         svg.appendChild(label);
 
-        const amount = svgEl("text", { x: 328, y: y + 18, fill: "#4b5563", "font-size": "13" });
+        const amount = svgEl("text", { x: 332, y: y + 22, fill: "#f0d8b0", "font-size": "18", "font-weight": "600" });
         amount.textContent = formatBytes(slice.value);
         svg.appendChild(amount);
     });
@@ -285,9 +336,9 @@ function renderCollaborationBars(container, audits, selfLogin) {
 
     clearNode(container);
 
-    const width = 620;
-    const height = 280;
-    const pad = { top: 22, right: 30, bottom: 26, left: 65 };
+    const width = 680;
+    const height = 320;
+    const pad = { top: 28, right: 34, bottom: 28, left: 132 };
     const innerW = width - pad.left - pad.right;
     const innerH = height - pad.top - pad.bottom;
     const rowH = innerH / data.length;
@@ -302,6 +353,34 @@ function renderCollaborationBars(container, audits, selfLogin) {
         "aria-label": "Grouped with each teammate bar chart"
     });
 
+    svg.appendChild(
+        svgEl("rect", {
+            x: 0,
+            y: 0,
+            width,
+            height,
+            fill: "#3a2b1f"
+        })
+    );
+
+    const panelX = 24;
+    const panelY = 24;
+    const panelW = width - 48;
+    const panelH = height - 48;
+
+    svg.appendChild(
+        svgEl("rect", {
+            x: panelX,
+            y: panelY,
+            width: panelW,
+            height: panelH,
+            fill: "#f1dfbd",
+            stroke: "#7b5a34",
+            "stroke-width": 1.4,
+            rx: 10
+        })
+    );
+
     data.forEach((d, i) => {
         const y = pad.top + i * rowH + (rowH - barH) / 2;
         const barW = (d.count / maxCount) * innerW;
@@ -312,7 +391,7 @@ function renderCollaborationBars(container, audits, selfLogin) {
                 y,
                 width: innerW,
                 height: barH,
-                fill: "#f1f5f9",
+                fill: "#ead4b1",
                 rx: 4
             })
         );
@@ -323,7 +402,7 @@ function renderCollaborationBars(container, audits, selfLogin) {
                 y,
                 width: barW,
                 height: barH,
-                fill: "#0b6e4f",
+                fill: "#915326",
                 rx: 4
             })
         );
@@ -333,17 +412,19 @@ function renderCollaborationBars(container, audits, selfLogin) {
             y: y + barH * 0.72,
             "text-anchor": "end",
             fill: "#1f2937",
-            "font-size": "11"
+            "font-size": "14",
+            "font-weight": "700"
         });
         label.textContent = d.login;
         svg.appendChild(label);
 
         const value = svgEl("text", {
-            x: pad.left + barW + 6,
+            x: barW >= 26 ? pad.left + barW - 6 : pad.left + 4,
             y: y + barH * 0.72,
-            fill: "#111827",
-            "font-size": "11",
-            "font-weight": "600"
+            fill: "#fff0d1",
+            "font-size": "14",
+            "font-weight": "700",
+            "text-anchor": barW >= 26 ? "end" : "start"
         });
         value.textContent = String(d.count);
         svg.appendChild(value);
@@ -354,7 +435,8 @@ function renderCollaborationBars(container, audits, selfLogin) {
         y1: pad.top - 4,
         x2: pad.left,
         y2: height - pad.bottom + 2,
-        stroke: "#94a3b8"
+        stroke: "#6c4829",
+        "stroke-width": 1.6
     });
     svg.appendChild(axis);
 
