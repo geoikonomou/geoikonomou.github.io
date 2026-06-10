@@ -64,6 +64,23 @@ button {
 
 .stats { grid-column: 1 / -1; }
 
+.stats-top-row {
+    display: grid;
+    grid-template-columns: 1.7fr 1.3fr;
+    gap: 0.9rem;
+}
+
+.graph-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.graph-title {
+    margin: 0.2rem 0 0.35rem;
+    font-size: 0.95rem;
+    color: #2f3a4c;
+}
+
 .chart-placeholder {
     margin-top: 0.6rem;
     border: 1px dashed var(--line);
@@ -82,11 +99,21 @@ button {
 }
 
 #chart-a,
-#chart-b {
+#chart-c,
+#chart-d {
     min-height: 240px;
     background: #fff;
 }
 
+#chart-c {
+    min-height: 390px;
+}
+
+#chart-d {
+    margin-top: 0.9rem;
+}
+
 @media (max-width: 760px) {
     .grid { grid-template-columns: 1fr;}
+    .stats-top-row { grid-template-columns: 1fr; }
 }

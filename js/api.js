@@ -122,6 +122,15 @@ export async function fetchProfileData(token) {
         }
       }
 
+      audit {
+        group {
+          id
+          members {
+            userLogin
+          }
+        }
+      }
+
       result(limit: 1, order_by: { createdAt: asc }) {
         id
         user {
@@ -135,7 +144,12 @@ export async function fetchProfileData(token) {
       order_by: { createdAt: asc }
       ) {
         amount
-        createdAt}
+        createdAt
+        event {
+          id
+        }
+        isBonus
+      }
     }
   `;
 
