@@ -368,6 +368,10 @@ button:active {
         align-items: center;
     }
 
+    .app-header {
+        text-align: center;
+    }
+
     .grid {
         grid-template-columns: 1fr;
     }
@@ -401,11 +405,14 @@ button:active {
     }
 
     .grid > .card > h3,
-    .graph-title,
+    .graph-title {
+        text-align: center;
+    }
+
     #identity-content,
     #performance-content,
     #progress-content {
-        text-align: center;
+        text-align: left;
     }
 
     .graph-block {
