@@ -7,14 +7,14 @@
         <link rel="stylesheet" href="./styles.css">
     </head>
     <body>
-        <header class="app-header">
-            <h1>GraphQL Profile Dashboard</h1>
-            <p>Step 1 Skeleton</p>
+        <header id="app-header" class="app-header">
+            <h1>Dashboard</h1>
         </header>
 
         <main class="app-main">
             <section id="login-view" class="view">
                 <h2>Login</h2>
+                <p id="login-message" class="message" aria-live="polite"></p>
                 <form id="login-form" class="card">
                     <label for="identifier">Username or Email</label>
                     <input id="identifier" name="identifier" type="text" required>
@@ -23,13 +23,12 @@
                     <input id="password" name="password" type="password" required>
 
                     <button type="submit">Sign in</button>
-                    <p id="login-message" class="message" aria-live="polite"></p>
                 </form>
             </section>
 
             <section id="profile-view" class="view hidden">
                 <div class="profile-top">
-                    <h2>My Profile</h2>
+                    <h2 id="profile-heading">Profile</h2>
                     <button id="logout-button" type="button">Logout</button>
                 </div>
 
