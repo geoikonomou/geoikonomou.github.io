@@ -21,3 +21,9 @@ export function setAuthStatus(status, token = null, error = null) {
     appState.auth.token = token;
     appState.auth.error = error;
 }
+
+export function setDataState(status, profile = null, error = null) {
+    appState.data.status = status;
+    appState.data.profile = profile;
+    appState.data.error = error;
+}

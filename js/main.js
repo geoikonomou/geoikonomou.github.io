@@ -1,7 +1,7 @@
 import { clearToken, getToken, saveToken } from "./auth.js";
 import { renderChartPlaceholders } from "./charts/svgCharts.js"
-import { signIn, validateToken } from "./api.js";
-import { appState, setAuthStatus, setView } from "./state.js";
+import { fetchProfileData, signIn, validateToken } from "./api.js";
+import { appState, setAuthStatus, setDataState, setView } from "./state.js";
 import { bindLoginForm, setLoginBusy, setLoginMessage } from "./views/loginView.js";
 import { bindLogout } from "./views/profileView.js"
 
@@ -16,6 +16,68 @@ function render() {
     } else {
         profileView.classList.remove("hidden");
         loginView.classList.add("hidden");
+    }
+}
+
+function setProfileMessage(message) {
+    const el = document.getElementById("profile-message");
+    if (el) el.textContent = message;
+}
+
+function renderProfileData(profileData) {
+    const identityEl = document.getElementById("identity-content");
+    const performanceEl = document.getElementById("performance-content");
+    const progressEl = document.getElementById("progress-content");
+
+    const user = profileData.user && profileData.user[0] ? profileData.user[0] : null;
+    const xpTotal = profileData.transaction_aggregate?.aggregate?.sum?.amount || 0;
+    const xpCount = profileData.transaction_aggregate?.aggregate.count || 0;
+    const passCount = profileData.progress_pass?.aggregate?.count || 0;
+    const failCount = profileData.progress_fail?.aggregate?.count || 0;
+
+    if (identityEl) {
+        identityEl.innerHTML = [
+            "<p><strong>Login:</strong> " + (user?.login || "N/A") + "</p>",
+            "<p><strong>User ID:</strong> " + (user?.id ?? "N/A") + "</p>",
+            "<p><strong>Audit Ratio:</strong> " + (user?.auditRatio ?? "N/A") + "</p>"
+        ].join("");
+    }
+
+    if (performanceEl) {
+        performanceEl.innerHTML = [
+            "<p><strong>Total XP:</strong> " + xpTotal + "</p>",
+            "<p><strong>XP Transactions:</strong> " + xpCount + "</p>"
+        ].join("");
+    }
+
+    if (progressEl) {
+        const total = passCount + failCount;
+        const passRate = total > 0 ? ((passCount / total) * 100).toFixed(1) : "0.0";
+
+        progressEl.innerHTML = [
+            "<p><strong>Pass Count:</strong> " + passCount + "</p>",
+            "<p><strong>Fail Count:</strong> " + failCount + "</p>",
+            "<p><strong>Pass Rate:</strong> " + passRate + "</p>"
+        ].join("");
+    }
+}
+
+async function loadProfile(token) {
+    setDataState("loading", null, null);
+    setProfileMessage("Loading profile data...")
+
+    try {
+        const profileData = await fetchProfileData(token);
+        setDataState("loaded", profileData, null);
+        renderProfileData(profileData);
+        setProfileMessage("");
+    } catch (error) {
+        setDataState("error", null, error.message || "Failed to load profile data.");
+        setProfileMessage(error.message || "Failed to load profile data.");
+
+        if ((error.message || "").toLowerCase().includes("unauthorized")) {
+            handleLogout();
+        }
     }
 }
 
@@ -36,6 +98,7 @@ async function handleLoginAttempt ({ identifier, password }) {
         setAuthStatus("authenticated", token, null);
         setView("profile");
         render();
+        await loadProfile(token);
     } catch (error) {
         setAuthStatus("auth-error", null, error.message);
         setLoginMessage(error.message || "Login failed.");
@@ -47,8 +110,10 @@ async function handleLoginAttempt ({ identifier, password }) {
 function handleLogout() {
     clearToken();
     setAuthStatus("unauthenticated", null, null);
+    setDataState("idle", null, null);
     setView("login");
     setLoginMessage("");
+    setProfileMessage("");
     render();
 }
 
@@ -68,17 +133,19 @@ async function bootstrap() {
     setAuthStatus("authenticating", existingToken, null);
     const stillValid = await validateToken(existingToken);
 
-    if (stillValid) {
-        setAuthStatus("authenticated", existingToken, null);
-        setView("profile");
-    } else {
-        clearToken();
-        setAuthStatus("unauthenticated", null, null);
-        setView("login");
-        setLoginMessage("Session expired. Please sign in again.");
-    }
-
+   if (!stillValid) {
+    clearToken();
+    setAuthStatus("unauthenticated", null, null);
+    setView("login");
+    setLoginMessage("Session expired. Please sign in again");
     render();
+    return;
+   }
+
+   setAuthStatus("authenticated", existingToken, null);
+   setView("profile");
+   render();
+   await loadProfile(existingToken);
 }
 
 bootstrap();

@@ -39,7 +39,7 @@ export async function signIn(identifier, password) {
     }
 
     const raw = await response.text();
-    const token =parseTokenResponse(raw);
+    const token = parseTokenResponse(raw);
 
     if (!token) {
         throw new Error("Signin succeded but token was empty");
@@ -68,7 +68,7 @@ export async function graphqlRequest(token, query, variables = {}) {
 
     const payload = await response.json();
 
-    if (payload.errors && payload.errors.lenght > 0) {
+    if (payload.errors && payload.errors.length > 0) {
         throw new Error(payload.errors[0].message || "GraphQL error");
     }
 
@@ -90,4 +90,47 @@ export async function validateToken(token) {
     } catch (_) {
         return false;
     }
+}
+
+export async function fetchProfileData(token) {
+  const query = `
+    query Dashboard($xpType: String!) {
+      user {
+        id
+        login
+        auditRatio
+      }
+
+      transaction_aggregate(where: { type: { _eq: $xpType } }) {
+        aggregate {
+          count
+          sum {
+            amount
+          }
+        }
+      }
+
+      progress_pass: progress_aggregate(where: { grade: { _eq: 1 } }) {
+        aggregate {
+          count
+        }
+      }
+
+      progress_fail: progress_aggregate(where: { grade: { _eq: 0 } }) {
+        aggregate {
+          count
+        }
+      }
+
+      result(limit: 1, order_by: { createdAt: desc }) {
+        id
+        user {
+          id
+          login
+        }
+      }
+    }
+  `;
+
+  return graphqlRequest(token, query, { xpType: "xp" });
 }
