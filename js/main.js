@@ -1,5 +1,5 @@
 import { clearToken, getToken, saveToken } from "./auth.js";
-import { renderChartPlaceholders } from "./charts/svgCharts.js"
+import { renderChartPlaceholders, renderCharts } from "./charts/svgCharts.js"
 import { fetchProfileData, signIn, validateToken } from "./api.js";
 import { appState, setAuthStatus, setDataState, setView } from "./state.js";
 import { bindLoginForm, setLoginBusy, setLoginMessage } from "./views/loginView.js";
@@ -31,7 +31,7 @@ function renderProfileData(profileData) {
 
     const user = profileData.user && profileData.user[0] ? profileData.user[0] : null;
     const xpTotal = profileData.transaction_aggregate?.aggregate?.sum?.amount || 0;
-    const xpCount = profileData.transaction_aggregate?.aggregate.count || 0;
+    const xpCount = profileData.transaction_aggregate?.aggregate?.count || 0;
     const passCount = profileData.progress_pass?.aggregate?.count || 0;
     const failCount = profileData.progress_fail?.aggregate?.count || 0;
 
@@ -57,9 +57,11 @@ function renderProfileData(profileData) {
         progressEl.innerHTML = [
             "<p><strong>Pass Count:</strong> " + passCount + "</p>",
             "<p><strong>Fail Count:</strong> " + failCount + "</p>",
-            "<p><strong>Pass Rate:</strong> " + passRate + "</p>"
+            "<p><strong>Pass Rate:</strong> " + passRate + "%</p>"
         ].join("");
     }
+
+    renderCharts(profileData);
 }
 
 async function loadProfile(token) {
