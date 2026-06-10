@@ -133,7 +133,6 @@ export async function fetchProfileData(token) {
       xp_transactions: transaction(
       where: { type: { _eq: $xpType } }
       order_by: { createdAt: asc }
-      limit: 120
       ) {
         amount
         createdAt}

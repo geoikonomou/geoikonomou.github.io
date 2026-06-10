@@ -1,3 +1,5 @@
+import { formatBytes } from "../format.js";
+
 function clearNode(node) {
     while (node.firstChild) node.removeChild(node.firstChild);
 }
@@ -12,6 +14,7 @@ function formatDateLabel(isoDate) {
     const d = new Date(isoDate);
     return d.toLocaleDateString(undefined, { month: "short", day: "numeric"});
 }
+
 
 function renderEmpty(container, message) {
     clearNode(container);
@@ -28,7 +31,7 @@ function renderXpLineChart(container, transactions) {
 
     const width = 720;
     const height = 260;
-    const pad = { top: 18, right: 18, bottom: 36, left: 32 };
+    const pad = { top: 18, right: 18, bottom: 36, left: 60 };
     const innerW = width - pad.left - pad.right;
     const innerH = height - pad.top - pad.bottom;
 
@@ -64,8 +67,8 @@ function renderXpLineChart(container, transactions) {
         const v = minY + (i/ticks) * (maxY -minY);
         const y = yFor(v);
         svg.appendChild(svgEl("line", { x1: pad.left, y1: y, x2: width - pad.right, y2: y, stroke: "#e5e7eb" }));
-        const txt = svgEl("text", { x: pad.left - 8, y: y + 4, "text-anchor": "end", fill: "#374151", "font-size": "11" });
-        txt.textContent = Math.round(v).toString();
+        const txt = svgEl("text", { x: pad.left - 10, y: y + 4, "text-anchor": "end", fill: "#374151", "font-size": "11" });
+        txt.textContent = formatBytes(v);
         svg.appendChild(txt);
     }
 
@@ -196,4 +199,3 @@ export function renderChartPlaceholders() {
     if (chartA) chartA.textContent = "Graph A loading...";
     if (chartB) chartB.textContent = "Graph B loading...";
 }
-

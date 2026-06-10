@@ -4,6 +4,7 @@ import { fetchProfileData, signIn, validateToken } from "./api.js";
 import { appState, setAuthStatus, setDataState, setView } from "./state.js";
 import { bindLoginForm, setLoginBusy, setLoginMessage } from "./views/loginView.js";
 import { bindLogout } from "./views/profileView.js"
+import { formatRatio, formatBytes } from "./format.js";
 
 
 function render() {
@@ -34,18 +35,19 @@ function renderProfileData(profileData) {
     const xpCount = profileData.transaction_aggregate?.aggregate?.count || 0;
     const passCount = profileData.progress_pass?.aggregate?.count || 0;
     const failCount = profileData.progress_fail?.aggregate?.count || 0;
+    const formattedRatio = formatRatio(user?.auditRatio, 1);
 
     if (identityEl) {
         identityEl.innerHTML = [
             "<p><strong>Login:</strong> " + (user?.login || "N/A") + "</p>",
             "<p><strong>User ID:</strong> " + (user?.id ?? "N/A") + "</p>",
-            "<p><strong>Audit Ratio:</strong> " + (user?.auditRatio ?? "N/A") + "</p>"
+            "<p><strong>Audit Ratio:</strong> " + formattedRatio + "</p>"
         ].join("");
     }
 
     if (performanceEl) {
         performanceEl.innerHTML = [
-            "<p><strong>Total XP:</strong> " + xpTotal + "</p>",
+            "<p><strong>Total XP:</strong> " + formatBytes(xpTotal) + "</p>",
             "<p><strong>XP Transactions:</strong> " + xpCount + "</p>"
         ].join("");
     }
@@ -149,5 +151,7 @@ async function bootstrap() {
    render();
    await loadProfile(existingToken);
 }
+
+
 
 bootstrap();
