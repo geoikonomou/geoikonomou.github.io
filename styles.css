@@ -362,6 +362,12 @@ button:active {
 }
 
 @media (max-width: 760px) {
+    .app-main {
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+    }
+
     .grid {
         grid-template-columns: 1fr;
     }
@@ -415,7 +421,9 @@ button:active {
     }
 
     #login-view:not(.hidden) {
-        min-height: 100vh;
+        min-height: 100%;
+        width: 100%;
+        align-items: center;
     }
 
     #login-form {
