@@ -81,6 +81,12 @@ button {
     color: #8f1f1f
 }
 
+#chart-a,
+#chart-b {
+    min-height: 240px;
+    background: #fff;
+}
+
 @media (max-width: 760px) {
     .grid { grid-template-columns: 1fr;}
 }
