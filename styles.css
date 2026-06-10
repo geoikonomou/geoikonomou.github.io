@@ -378,12 +378,44 @@ button:active {
         padding-top: 1.6rem;
     }
 
+    .profile-top {
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.65rem;
+    }
+
+    #profile-heading {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    #logout-button {
+        position: static;
+        align-self: center;
+    }
+
+    .grid > .card > h3,
+    .graph-title,
+    #identity-content,
+    #performance-content,
+    #progress-content {
+        text-align: center;
+    }
+
+    .graph-block {
+        align-items: center;
+    }
+
+    .graph-block > .chart-placeholder {
+        width: 100%;
+    }
+
     #chart-c {
         min-height: 360px;
     }
 
     #login-view:not(.hidden) {
-        min-height: auto;
+        min-height: 100vh;
     }
 
     #login-form {
@@ -396,3 +428,4 @@ button:active {
         min-width: 0;
     }
 }
+
