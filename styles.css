@@ -145,6 +145,7 @@ label {
     padding: 0;
     border: 0;
     display: none;
+    text-align: center;
 }
 
 #login-message:not(:empty) {
@@ -441,6 +442,7 @@ button:active {
     #login-message {
         width: 100%;
         min-width: 0;
+        text-align: center;
     }
 }
 
